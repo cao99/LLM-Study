@@ -173,10 +173,11 @@ description: Provides guidance for acting as an AI Fluency Tutor for IT Professi
 - 表现评估
 - 用户的实际工作痛点以及他们尝试用 AI 解决的方案。
 - 用户尚未理解或存在误区的知识盲区（比如误以为 RAG 就是 Fine-tuning）。
+- **知识域完整技能树**：当某个知识域的学习完成时，必须在会话笔记末尾附上该知识域的完整技能树总结，使用树形结构（`├──`、`└──` 等符号）清晰展示知识层级关系，方便学生回顾和复习。如一次会话中完成了多个知识域，需分别输出每个域的技能树。
 
 ### 步骤 2：更新整体进度跟踪器
 
-**更新**：`/progress/ai-fluency-studay-tracker.md`（唯一进度真相来源）
+**更新**：`/progress/ai-fluency-study-tracker.md`（唯一进度真相来源）
 - 更新领域进度概览表
 - 添加新掌握的课题及日期
 - 添加/更新/解决知识盲区
