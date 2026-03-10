@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>马年春节抽奖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #ffd700;
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.8); }
+        }
+
+        .horse-decoration {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 40px;
+            letter-spacing: 8px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lottery-box {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a5a);
+            border: 8px solid #ffd700;
+            border-radius: 20px;
+            padding: 60px 80px;
+            margin: 30px auto;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.2),
+                0 0 30px rgba(255, 215, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lottery-box::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            z-index: -1;
+            border-radius: 23px;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .corner {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 4px solid #ffd700;
+        }
+
+        .corner-tl {
+            top: 10px;
+            left: 10px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-tr {
+            top: 10px;
+            right: 10px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bl {
+            bottom: 10px;
+            left: 10px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-br {
+            bottom: 10px;
+            right: 10px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .display-area {
+            font-size: 4rem;
+            color: #fff;
+            font-weight: bold;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            transition: transform 0.1s ease;
+        }
+
+        .display-area.rolling {
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #ffd700, #ffb700);
+            color: #c41e3a;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 25px rgba(0, 0, 0, 0.4),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-start {
+            background: linear-gradient(145deg, #ffd700, #ffed4e);
+        }
+
+        .btn-stop {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a5a);
+            color: #fff;
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: firework 1s ease-out forwards;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(20);
+                opacity: 0;
+            }
+        }
+
+        .cloud {
+            position: absolute;
+            opacity: 0.3;
+            font-size: 3rem;
+            color: #ffd700;
+        }
+
+        .cloud-1 {
+            top: 10%;
+            left: 5%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cloud-2 {
+            top: 20%;
+            right: 10%;
+            animation: float 7s ease-in-out infinite 1s;
+        }
+
+        .cloud-3 {
+            bottom: 15%;
+            left: 8%;
+            animation: float 5s ease-in-out infinite 2s;
+        }
+
+        .cloud-4 {
+            bottom: 25%;
+            right: 5%;
+            animation: float 8s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .winner-message {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-top: 20px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+        }
+
+        .winner-message.show {
+            opacity: 1;
+            transform: scale(1);
+            animation: winnerPulse 0.5s ease-out;
+        }
+
+        @keyframes winnerPulse {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .participant-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .participant-list h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .participants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .participant {
+            background: rgba(255, 215, 0, 0.2);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .participant.winner {
+            background: #ffd700;
+            color: #c41e3a;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
+
+        .settings {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .settings h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            color: #ffd700;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .input-hint {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .lottery-box {
+                padding: 40px 30px;
+                margin: 20px 10px;
+            }
+
+            .display-area {
+                font-size: 2.5rem;
+            }
+
+            .btn {
+                padding: 15px 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud cloud-1">☁</div>
+    <div class="cloud cloud-2">☁</div>
+    <div class="cloud cloud-3">☁</div>
+    <div class="cloud cloud-4">☁</div>
+
+    <div class="container">
+        <h1>🐴 马年大吉 🐴</h1>
+        <div class="horse-decoration">龙马精神 · 万事如意</div>
+
+        <div class="lottery-box">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+
+            <div class="display-area" id="displayArea">
+                准备开始
+            </div>
+
+            <button class="btn btn-start" id="startBtn" onclick="startLottery()">
+                开始抽奖
+            </button>
+            <button class="btn btn-stop" id="stopBtn" onclick="stopLottery()" disabled>
+                停止
+            </button>
+
+            <div class="winner-message" id="winnerMessage"></div>
+        </div>
+
+        <div class="settings">
+            <h3>⚙️ 抽奖设置</h3>
+            <div class="input-group">
+                <label>参与者名单（每行一个名字）：</label>
+                <textarea id="participantInput" placeholder="张三&#10;李四&#10;王五&#10;赵六&#10;...">张三
+李四
+王五
+赵六
+钱七
+孙八
+周九
+吴十
+郑十一
+王十二</textarea>
+                <div class="input-hint">请在上方输入框中填写参与者姓名，每行一个</div>
+            </div>
+            <button class="btn" onclick="updateParticipants()">更新名单</button>
+        </div>
+
+        <div class="participant-list">
+            <h3>📋 当前参与者</h3>
+            <div class="participants" id="participantList"></div>
+        </div>
+    </div>
+
+    <script>
+        let participants = [];
+        let isRolling = false;
+        let rollInterval = null;
+        let currentIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateParticipants();
+        });
+
+        function updateParticipants() {
+            const input = document.getElementById('participantInput').value;
+            participants = input.split('\n')
+                .map(name => name.trim())
+                .filter(name => name.length > 0);
+            
+            displayParticipantList();
+            
+            if (participants.length === 0) {
+                alert('请至少添加一个参与者！');
+            }
+        }
+
+        function displayParticipantList() {
+            const listContainer = document.getElementById('participantList');
+            listContainer.innerHTML = '';
+            
+            participants.forEach((name, index) => {
+                const div = document.createElement('div');
+                div.className = 'participant';
+                div.id = `participant-${index}`;
+                div.textContent = name;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function startLottery() {
+            if (participants.length === 0) {
+                alert('请先添加参与者！');
+                return;
+            }
+
+            isRolling = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('displayArea').classList.add('rolling');
+            document.getElementById('winnerMessage').classList.remove('show');
+
+            document.querySelectorAll('.participant').forEach(p => {
+                p.classList.remove('winner');
+            });
+
+            rollInterval = setInterval(() => {
+                currentIndex = Math.floor(Math.random() * participants.length);
+                document.getElementById('displayArea').textContent = participants[currentIndex];
+            }, 50);
+        }
+
+        function stopLottery() {
+            if (!isRolling) return;
+
+            isRolling = false;
+            clearInterval(rollInterval);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('displayArea').classList.remove('rolling');
+
+            const winnerIndex = Math.floor(Math.random() * participants.length);
+            const winner = participants[winnerIndex];
+            
+            document.getElementById('displayArea').textContent = winner;
+            
+            const winnerElement = document.getElementById(`participant-${winnerIndex}`);
+            if (winnerElement) {
+                winnerElement.classList.add('winner');
+            }
+
+            const messageDiv = document.getElementById('winnerMessage');
+            messageDiv.textContent = `🎊 恭喜 ${winner} 中奖！🎊`;
+            messageDiv.classList.add('show');
+
+            createFireworks();
+        }
+
+        function createFireworks() {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * window.innerWidth + 'px';
+                    firework.style.top = Math.random() * window.innerHeight + 'px';
+                    document.body.appendChild(firework);
+
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 1000);
+                }, i * 100);
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isRolling) {
+                    stopLottery();
+                } else {
+                    startLottery();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
